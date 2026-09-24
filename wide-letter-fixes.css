@@ -1,0 +1,32 @@
+/* Final 16:9 frame geometry. These rules intentionally win over the former portrait-card values. */
+.letter{width:min(94vw,1180px)!important;height:auto!important;max-height:88svh!important;aspect-ratio:16/9!important;background:url("birthday-letter-wide-bg.png") center/100% 100% no-repeat!important;border-radius:18px!important}
+.letter::before{content:"";position:absolute;z-index:3;inset:0;background:url("birthday-letter-frames.png") center/100% 100% no-repeat;pointer-events:none}
+.photo-collage{z-index:2!important}.memory{box-shadow:none!important;filter:saturate(.92) contrast(1.04) brightness(.9)!important}
+.memory.m1{left:4.67%!important;top:7.01%!important;width:13.76%!important;height:26.46%!important;border-radius:50%!important;transform:none!important;clip-path:none!important}
+.memory.m2{left:19.56%!important;top:26.67%!important;width:9.63%!important;height:23.27%!important;border-radius:50%!important;transform:none!important;clip-path:none!important}
+.memory.m3{left:5.32%!important;top:57.70%!important;width:14.89%!important;height:34.64%!important;border-radius:8%!important;transform:rotate(-7deg)!important;clip-path:none!important}
+.memory.m4{left:24.34%!important;top:68.54%!important;width:9.93%!important;height:20.94%!important;border-radius:50%!important;transform:none!important;clip-path:none!important}
+.memory.m5{left:75.24%!important;top:3.83%!important;width:12.08%!important;height:24.12%!important;border-radius:7%!important;transform:rotate(6deg)!important;clip-path:none!important}
+.memory.m6{left:87.32%!important;top:29.97%!important;width:10.11%!important;height:22.74%!important;border-radius:50%!important;transform:none!important;clip-path:none!important}
+.memory.m7{left:67.40%!important;top:70.24%!important;width:11.42%!important;height:22.85%!important;border-radius:8%!important;transform:rotate(8deg)!important;clip-path:none!important}
+.memory.m8{left:84.09%!important;top:65.99%!important;width:11.54%!important;height:25.72%!important;border-radius:50%!important;transform:none!important;clip-path:none!important}
+.letter-copy{z-index:4!important;inset:16% 32% 13%!important}.letter .close{z-index:6!important;right:2.2%!important;top:3.2%!important}
+@media(max-width:700px){.letter{width:96vw!important;max-height:none!important}.letter-copy{inset:15% 30% 12%!important}.letter-copy .letter-kicker{font-size:13px}.letter-copy h2{font-size:20px}.letter-copy h2 span{font-size:34px}.letter-copy .letter-text{font-size:11px}.letter-copy .together-line{font-size:11px}.letter-copy .letter-sign{font-size:15px}.letter .close{width:29px!important;height:29px!important;font-size:21px!important}}
+.memory.m1,.memory.m2,.memory.m4,.memory.m6,.memory.m8{clip-path:ellipse(50% 50% at 50% 50%)!important;border-radius:0!important}.memory.m3{clip-path:polygon(6% 2%,97% 0,94% 98%,2% 94%)!important;border-radius:0!important}.memory.m5{clip-path:polygon(6% 1%,98% 5%,94% 99%,1% 94%)!important;border-radius:0!important}.memory.m7{clip-path:polygon(7% 1%,97% 5%,94% 98%,2% 94%)!important;border-radius:0!important}
+.memory{object-position:center!important}
+/* The transparent openings were measured from the supplied frame asset.  The
+   tilted openings use their pre-rotation dimensions, so their images now land
+   inside the frame instead of growing past it after transform: rotate(). */
+.memory.m1{left:4.67%!important;top:6.91%!important;width:13.82%!important;height:26.67%!important}
+.memory.m2{left:19.56%!important;top:26.67%!important;width:9.69%!important;height:23.38%!important}
+.memory.m3{left:6.38%!important;top:58.96%!important;width:12.83%!important;height:32.20%!important;transform:rotate(-7deg)!important;clip-path:polygon(3% 1%,99% 1%,96% 99%,1% 95%)!important}
+.memory.m4{left:24.34%!important;top:68.44%!important;width:9.99%!important;height:21.36%!important}
+.memory.m5{left:75.83%!important;top:4.78%!important;width:10.96%!important;height:22.32%!important;transform:rotate(6deg)!important;clip-path:polygon(3% 1%,99% 4%,96% 99%,1% 95%)!important}
+.memory.m6{left:87.32%!important;top:29.86%!important;width:10.17%!important;height:23.06%!important}
+.memory.m7{left:68.17%!important;top:71.38%!important;width:9.95%!important;height:20.69%!important;transform:rotate(8deg)!important;clip-path:polygon(3% 1%,99% 4%,96% 99%,1% 95%)!important}
+.memory.m8{left:84.09%!important;top:65.99%!important;width:11.78%!important;height:25.93%!important}
+/* One native-size collage is masked with the real transparent openings from
+   the supplied frame. It stays pixel-aligned with the frame at every scale. */
+.photo-collage{background:url("birthday-letter-photo-collage.png") center/100% 100% no-repeat!important}
+.photo-collage .memory{display:none!important}
+.letter-copy{inset:7% 28% 9%!important;justify-content:flex-start!important;padding:2.3% 2.5% 0!important}.letter-copy:before{content:"";position:absolute;z-index:-1;inset:-4% -5%;border-radius:48% 48% 30% 30%;background:radial-gradient(ellipse,rgba(38,5,24,.58),rgba(30,2,18,.12) 68%,transparent 78%);filter:blur(3px)}.letter-copy:after{content:"";position:absolute;z-index:-1;top:5%;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,#dca273,transparent);box-shadow:0 195px 0 rgba(220,162,115,.52)}.letter-copy .letter-ornament{transform:scale(.88)!important;margin:-2px 0 0!important}.letter-copy .letter-kicker{font-size:clamp(17px,1.85vw,24px)!important;margin:0 0 2px!important}.letter-copy h2{font-size:clamp(29px,3vw,45px)!important;margin:1px 0 5px!important}.letter-copy h2 span{font-size:clamp(51px,5.2vw,74px)!important}.letter-copy .letter-text{font-size:clamp(13px,1.27vw,18px)!important;line-height:1.1!important;margin:4px auto!important}.letter-copy .letter-text p{margin:6px 0!important}.letter-copy .birthday-shout{font-family:"Great Vibes",cursive!important;color:#ffb3c3!important;font-size:clamp(22px,2.18vw,32px)!important;line-height:1!important;margin:9px 0 4px!important;text-shadow:0 0 12px rgba(255,88,140,.45)}.letter-copy .together-line{font-size:clamp(15px,1.45vw,20px)!important;margin:3px 0!important}.letter-copy .letter-sign{font-size:clamp(21px,2.1vw,27px)!important;margin:2px!important}

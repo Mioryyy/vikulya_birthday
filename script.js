@@ -10,10 +10,35 @@ const letterLayout=document.createElement('link');letterLayout.rel='stylesheet';
 const phrasesLayer = $('phrases'); const heartStream = $('heartStream');
 let audioContext = null, ambientTimer = null, soundOn = false, testMode = false, testEndAt = null, celebrationPlayed = false;
 let chimeContext = null;
+const COMPLIMENTS=['ти проста самое лучшее что случилось со мной 🎟','тваи глазки такие красивые что в них вечна можна смотреть','ну какая ты красоташка я нимагууу','мая красоташка самая самая на свете','ти самая лучшая женщина на свете','мая единственная и неповторимая девачкааа','ти такая умняшечка, я прост горжусь тобой','ти сильная, ти со всем справишься, я знаю','твое хихихихи самый лучший звук на свете','ти понимаешь мои приколы, за это я тебя и обожаю','у тебя няшнасть 9999лвл','с тобой даже в пасмурный день светло, мая солнечная красоташка','ти красивая даже когда думаешь что нет, проверено','с тобой так уютна, никуда бы не хотел деваться','ти такая заботливая, я это все время чувствую','ти добрая, и я это очинь ценю','дни с тобой самые самые лучшие','зачем мне какие-то девушки, когда у меня есть самая лучшая мая викуля','когда ти улыбаешься, мне сразу хорошо','ти в розовом такая няшна, одобряю','тебе так идут эти няшные кудряшкии','ти можешь быть какой угодно, я все равно тебя люблю','твой голос лучше любой музыки, особенно когда ты поешь','ти такая красивая, что аж страшно, вдруг это сон','ти мая кошечка любимая','я скучаю по тебе даже когда ти ушла на пять минут','ти самая красивенькая, самая умничка, самая любимая и ваще самая самая','ти мая любимка, и никто рядом не стоял','я так рад что ти у меня есть, спасибки что ти такая','мая девачка самая красивая, и я это всем скажу','я тебя оч оч сильна сильна люблю'];
+let lastShake=0, lastMotion=0;
 function relationshipDays(){ return Math.max(0, Math.floor((Date.now() - new Date(CONFIG.relationshipStart)) / 86400000)); }
 function setupTogether(){
   const line=document.createElement('p'); line.className='together-line'; line.innerHTML='Уже <strong>'+relationshipDays()+'</strong> дней вместе <i>♡</i>';
   document.querySelector('.letter-sign')?.before(line);
+  const mainLine=document.createElement('p'); mainLine.className='main-days'; mainLine.innerHTML='Уже <strong>'+relationshipDays()+'</strong> дней вместе <i>♡</i>';
+  $('universe').append(mainLine);
+}
+function showCompliment(){
+  document.querySelector('.compliment-note')?.remove();document.querySelector('.compliment-backdrop')?.remove();
+  const backdrop=document.createElement('i');backdrop.className='compliment-backdrop';document.body.append(backdrop);
+  const note=document.createElement('p');note.className='compliment-note';note.textContent=COMPLIMENTS[Math.floor(Math.random()*COMPLIMENTS.length)];document.body.append(note);setTimeout(()=>{note.classList.add('leaving');backdrop.classList.add('leaving')},2800);setTimeout(()=>{note.remove();backdrop.remove()},3500);
+}
+async function enablePhoneMotion(){
+  if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){
+    try{await DeviceMotionEvent.requestPermission()}catch(_){}
+  }
+}
+function setupComplimentJar(){
+  const jar=document.createElement('button');jar.className='compliment-jar';jar.type='button';jar.innerHTML='<span class="jar-spark">✦</span><span class="jar-copy"><small>Открой баночку</small>Комплиментов</span>';jar.addEventListener('click',async()=>{await enablePhoneMotion();showCompliment()});document.querySelector('.date-line')?.after(jar);
+}
+function setupSecret(){
+  const title=document.querySelector('.hero h1');let taps=0,tapTimer;
+  title.addEventListener('click',()=>{taps++;clearTimeout(tapTimer);tapTimer=setTimeout(()=>taps=0,1800);if(taps===5){taps=0;const secret=document.createElement('p');secret.className='secret-note';secret.innerHTML='<span>🎟</span><strong>Билетик на одно любое желание</strong><em>Покажи мне этот экран — и я всё сделаю, ну почти всё ♡</em>';document.body.append(secret);setTimeout(()=>secret.remove(),5200)}});
+}
+function setupPhoneMotion(){
+  const petals=$('petals');window.addEventListener('deviceorientation',event=>{if(event.gamma==null)return;petals.style.setProperty('--petal-tilt',Math.max(-2.5,Math.min(2.5,event.gamma/13))+'deg')},{passive:true});
+  window.addEventListener('devicemotion',event=>{const a=event.accelerationIncludingGravity;if(!a)return;const power=Math.abs(a.x||0)+Math.abs(a.y||0)+Math.abs(a.z||0),now=Date.now();if(Math.abs(power-lastMotion)>14&&now-lastShake>2200){lastShake=now;showCompliment()}lastMotion=power},{passive:true});
 }
 function playTone(frequency=440, duration=.55, volume=.018){
   if(!soundOn || !audioContext)return;
@@ -86,8 +111,12 @@ function burstPhrase(el,index,quiet=false){
 function seedPhrases(){CONFIG.phrasePositions.forEach((_,i)=>phrasesLayer.append(phraseElement(CONFIG.phrases[i],i)))}
 function createHeart(){const h=document.createElement('i');h.className='heart'+(Math.random()>.65?' outline':'');h.style.setProperty('--s',(7+Math.random()*12)+'px');h.style.setProperty('--color',['#ff7198','#ffa6a5','#f5b478','#e94b80'][Math.floor(Math.random()*4)]);h.style.setProperty('--tx',(-190+Math.random()*380)+'px');h.style.setProperty('--ty',(-120-Math.random()*190)+'px');h.style.setProperty('--d',(5+Math.random()*4)+'s');heartStream.append(h);setTimeout(()=>h.remove(),9500)}
 function seedPetals(){const layer=$('petals');for(let i=0;i<17;i++){const p=document.createElement('i');p.className='petal';p.style.left=(Math.random()*100)+'%';p.style.setProperty('--w',(6+Math.random()*12)+'px');p.style.setProperty('--fall',(14+Math.random()*16)+'s');p.style.setProperty('--wait',(-Math.random()*23)+'s');p.style.setProperty('--drift',(-90+Math.random()*180)+'px');p.style.setProperty('--petal-opacity',(0.28+Math.random()*.42).toFixed(2));p.style.setProperty('--petal-blur',i%4===0?'.45px':'0');layer.append(p)}}
-function openModal(){const modal=$('modal');modal.classList.add('open');modal.setAttribute('aria-hidden','false')}
-function closeModal(){const modal=$('modal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true')}
+function seedLetterPetals(){
+  document.querySelector('.letter-petal-layer')?.remove();const layer=document.createElement('div');layer.className='letter-petal-layer';
+  for(let i=0;i<38;i++){const petal=document.createElement('i');petal.className='letter-petal';const edge=i<26;petal.style.left=(edge?(i%2?3+Math.random()*18:79+Math.random()*18):28+Math.random()*44)+'%';petal.style.setProperty('--lp-size',(5+Math.random()*11)+'px');petal.style.setProperty('--lp-drift',(-42+Math.random()*84)+'px');petal.style.setProperty('--lp-delay',(Math.random()*7)+'s');petal.style.setProperty('--lp-duration',(6+Math.random()*7)+'s');layer.append(petal)}document.querySelector('.letter')?.append(layer);
+}
+function openModal(){const modal=$('modal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');seedLetterPetals()}
+function closeModal(){const modal=$('modal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.querySelector('.letter-petal-layer')?.remove()}
 $('revealButton').addEventListener('click',openModal);document.querySelectorAll('[data-close]').forEach(x=>x.addEventListener('click',closeModal));document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 // User-supplied ambient track. It begins and repeats from the requested sixth second.
 const ambientTrack=new Audio('ambient-loop.m4a');ambientTrack.preload='metadata';ambientTrack.volume=.12;
@@ -103,4 +132,4 @@ const soundGate=document.createElement('div');soundGate.className='sound-gate';s
 let parallaxFrame; window.addEventListener('pointermove',event=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;cancelAnimationFrame(parallaxFrame);parallaxFrame=requestAnimationFrame(()=>{const x=(event.clientX/innerWidth-.5)*5,y=(event.clientY/innerHeight-.5)*5;$('universe').style.setProperty('--px',x+'px');$('universe').style.setProperty('--py',y+'px')})},{passive:true});
 // User-selected swap: upper-right photo and the second lower-left photo.
 const frameTopRight=document.querySelector('.memory.m5'),frameLowerLeft=document.querySelector('.memory.m4');if(frameTopRight&&frameLowerLeft){const src=frameTopRight.src;frameTopRight.src=frameLowerLeft.src;frameLowerLeft.src=src;}
-setupTogether();seedPhrases();seedPetals();updateCountdown();setInterval(updateCountdown,1000);setInterval(createHeart,1600);setTimeout(createHeart,400);
+setupTogether();setupComplimentJar();setupSecret();setupPhoneMotion();seedPhrases();seedPetals();updateCountdown();setInterval(updateCountdown,1000);setInterval(createHeart,1600);setTimeout(createHeart,400);

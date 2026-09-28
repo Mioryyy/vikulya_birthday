@@ -11,7 +11,6 @@ const phrasesLayer = $('phrases'); const heartStream = $('heartStream');
 let audioContext = null, ambientTimer = null, soundOn = false, testMode = false, testEndAt = null, celebrationPlayed = false;
 let chimeContext = null;
 const COMPLIMENTS=['ти проста самое лучшее что случилось со мной 🎟','тваи глазки такие красивые что в них вечна можна смотреть','ну какая ты красоташка я нимагууу','мая красоташка самая самая на свете','ти самая лучшая женщина на свете','мая единственная и неповторимая девачкааа','ти такая умняшечка, я прост горжусь тобой','ти сильная, ти со всем справишься, я знаю','твое хихихихи самый лучший звук на свете','ти понимаешь мои приколы, за это я тебя и обожаю','у тебя няшнасть 9999лвл','с тобой даже в пасмурный день светло, мая солнечная красоташка','ти красивая даже когда думаешь что нет, проверено','с тобой так уютна, никуда бы не хотел деваться','ти такая заботливая, я это все время чувствую','ти добрая, и я это очинь ценю','дни с тобой самые самые лучшие','зачем мне какие-то девушки, когда у меня есть самая лучшая мая викуля','когда ти улыбаешься, мне сразу хорошо','ти в розовом такая няшна, одобряю','тебе так идут эти няшные кудряшкии','ти можешь быть какой угодно, я все равно тебя люблю','твой голос лучше любой музыки, особенно когда ты поешь','ти такая красивая, что аж страшно, вдруг это сон','ти мая кошечка любимая','я скучаю по тебе даже когда ти ушла на пять минут','ти самая красивенькая, самая умничка, самая любимая и ваще самая самая','ти мая любимка, и никто рядом не стоял','я так рад что ти у меня есть, спасибки что ти такая','мая девачка самая красивая, и я это всем скажу','я тебя оч оч сильна сильна люблю'];
-let lastShake=0, lastMotion=0;
 function relationshipDays(){ return Math.max(0, Math.floor((Date.now() - new Date(CONFIG.relationshipStart)) / 86400000)); }
 function setupTogether(){
   const line=document.createElement('p'); line.className='together-line'; line.innerHTML='Уже <strong>'+relationshipDays()+'</strong> дней вместе <i>♡</i>';
@@ -24,13 +23,8 @@ function showCompliment(){
   const backdrop=document.createElement('i');backdrop.className='compliment-backdrop';document.body.append(backdrop);
   const note=document.createElement('p');note.className='compliment-note';note.textContent=COMPLIMENTS[Math.floor(Math.random()*COMPLIMENTS.length)];document.body.append(note);setTimeout(()=>{note.classList.add('leaving');backdrop.classList.add('leaving')},2800);setTimeout(()=>{note.remove();backdrop.remove()},3500);
 }
-async function enablePhoneMotion(){
-  if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){
-    try{await DeviceMotionEvent.requestPermission()}catch(_){}
-  }
-}
 function setupComplimentJar(){
-  const jar=document.createElement('button');jar.className='compliment-jar';jar.type='button';jar.innerHTML='<span class="jar-spark">✦</span><span class="jar-copy"><small>Открой баночку</small>Комплиментов</span>';jar.addEventListener('click',async()=>{await enablePhoneMotion();showCompliment()});document.querySelector('.date-line')?.after(jar);
+  const jar=document.createElement('button');jar.className='compliment-jar';jar.type='button';jar.innerHTML='<span class="jar-spark">✦</span><span class="jar-copy"><small>Открой баночку</small>Комплиментов</span>';jar.addEventListener('click',showCompliment);document.querySelector('.date-line')?.after(jar);
 }
 function setupSecret(){
   const title=document.querySelector('.hero h1');let taps=0,tapTimer;
@@ -38,7 +32,6 @@ function setupSecret(){
 }
 function setupPhoneMotion(){
   const petals=$('petals');window.addEventListener('deviceorientation',event=>{if(event.gamma==null)return;petals.style.setProperty('--petal-tilt',Math.max(-2.5,Math.min(2.5,event.gamma/13))+'deg')},{passive:true});
-  window.addEventListener('devicemotion',event=>{const a=event.accelerationIncludingGravity;if(!a)return;const power=Math.abs(a.x||0)+Math.abs(a.y||0)+Math.abs(a.z||0),now=Date.now();if(Math.abs(power-lastMotion)>14&&now-lastShake>2200){lastShake=now;showCompliment()}lastMotion=power},{passive:true});
 }
 function playTone(frequency=440, duration=.55, volume=.018){
   if(!soundOn || !audioContext)return;
